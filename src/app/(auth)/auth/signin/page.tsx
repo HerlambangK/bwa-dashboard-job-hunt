@@ -11,13 +11,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { signInFormSchema } from "@/lib/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Sign } from "crypto";
 import { Metadata } from "next";
 import Link from "next/link";
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
+import { signIn } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 interface SignInPageProps {
   // Props dinamis Anda
 }
@@ -32,9 +33,25 @@ const SignInPage: FC<SignInPageProps> = ({}) => {
     resolver: zodResolver(signInFormSchema),
   });
 
-  const onSumbit = (val: z.infer<typeof signInFormSchema>) => {
-    console.log(val);
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const onSubmit = async (val: z.infer<typeof signInFormSchema>) => {
+    const authenticated = await signIn("credentials", {
+      ...val,
+      redirect: false,
+    });
+
+    if (authenticated?.error) {
+      toast({
+        title: "Error",
+        description: "Email or Password maybe wrong",
+      });
+      return;
+    }
+    await router.push("/");
   };
+
   return (
     <div className="relative w-full h-screen">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -47,7 +64,7 @@ const SignInPage: FC<SignInPageProps> = ({}) => {
           </div>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSumbit)}
+              onSubmit={form.handleSubmit(onSubmit)}
               className="mt-5 space-y-5"
             >
               <FormField
@@ -56,11 +73,7 @@ const SignInPage: FC<SignInPageProps> = ({}) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        className="w-[450px]"
-                        placeholder="Enter your email"
-                        {...field}
-                      />
+                      <Input placeholder="Enter your email" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

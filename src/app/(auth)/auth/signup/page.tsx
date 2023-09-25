@@ -9,11 +9,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
 import { signUpFormSchema } from "@/lib/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Sign } from "crypto";
 import { Metadata } from "next";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Router from "next/router";
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -32,9 +36,34 @@ const SignUpPage: FC<SignUpPageProps> = ({}) => {
     resolver: zodResolver(signUpFormSchema),
   });
 
-  const onSumbit = (val: z.infer<typeof signUpFormSchema>) => {
-    console.log(val);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const onSumbit = async (val: z.infer<typeof signUpFormSchema>) => {
+    // console.log(val);
+    try {
+      await fetch("/api/company/new-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(val),
+      });
+      toast({
+        title: "success",
+        description: `Your account has been created, welcome ${val.name}`,
+      });
+
+      await router.push("/auth/signin");
+    } catch (error) {
+      toast({
+        title: "error",
+        description: "Something went wrong when Sign Up",
+      });
+      console.log(error);
+    }
   };
+
   return (
     <div className="relative w-full h-screen">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
