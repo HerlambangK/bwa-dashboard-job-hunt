@@ -1,0 +1,113 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CategoryJob {
+  id   String @id @default(cuid())
+  name String
+  Job  Job[]
+}
+
+model Industry {
+  id   String @id @default(cuid())
+  name String
+}
+
+model Company {
+  id                 String               @id @default(cuid())
+  name               String
+  password           String
+  email              String               @unique
+  CompanySosialMedia CompanySosialMedia[]
+  CompanyTeam        CompanyTeam[]
+  CompanyOverview    CompanyOverview[]
+  Job                Job[]
+}
+
+model CompanySosialMedia {
+  id        String   @id @default(cuid())
+  instagram String
+  twitter   String
+  facebook  String
+  linkedin  String
+  youtube   String
+  companyId String?
+  Company   Company? @relation(fields: [companyId], references: [id])
+}
+
+model CompanyTeam {
+  id        String   @id @default(cuid())
+  name      String
+  position  String
+  instagram String
+  linkedin  String
+  CompanyId String?
+  Company   Company? @relation(fields: [CompanyId], references: [id])
+}
+
+model CompanyOverview {
+  id          String   @id @default(cuid())
+  image       String
+  website     String
+  name        String
+  location    String
+  employee    String
+  industry    String
+  dateFounded DateTime
+  techStack   String[]
+  description String
+  companyId   String?
+  Company     Company? @relation(fields: [companyId], references: [id])
+}
+
+model Job {
+  id             String       @id @default(cuid())
+  roles          String
+  datePosted     DateTime     @default(now())
+  dueDate        DateTime
+  jobType        String
+  applicants     Int
+  needs          Int
+  salaryFrom     String
+  salaryTo       String
+  requiredSkills String[]
+  description    String
+  responsibility String
+  whoYouAre      String
+  niceToHave     String
+  benefits       Json
+  companyId      String?
+  caregoryId     String?
+  CategoryJob    CategoryJob? @relation(fields: [caregoryId], references: [id])
+  Company        Company?     @relation(fields: [companyId], references: [id])
+  Applicants     Applicants[]
+}
+
+model User {
+  id         String       @id @default(cuid())
+  name       String
+  password   String
+  email      String       @unique
+  Applicants Applicants[]
+}
+
+model Applicants {
+  id               String  @id @default(cuid())
+  userId           String?
+  user             User?   @relation(fields: [userId], references: [id])
+  jobId            String?
+  job              Job?    @relation(fields: [jobId], references: [id])
+  previousJobTitle String
+  phone            String
+  linkedin         String
+  portofolio       String
+  coverLetter      String
+}
