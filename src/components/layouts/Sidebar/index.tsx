@@ -10,6 +10,7 @@ import {
 import { BsEnvelope, BsCalendar2Date, BsGear } from "react-icons/bs";
 import { PiUsersThreeBold } from "react-icons/pi";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 interface SidebarProps {}
 
@@ -82,6 +83,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
             <Button
               variant={"ghost"}
               className="w-full justify-start rounded-sm text-red-500 hover:bg-red-200 hover:text-red-500 "
+              onClick={() => signOut()}
             >
               <AiOutlineLogout className="mr-2 text-lg" /> Logout
             </Button>
