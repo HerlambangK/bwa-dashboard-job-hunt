@@ -33,13 +33,20 @@ import { Button } from "@/components/ui/button";
 import useSWR from "swr";
 import { fetcher } from "@/lib/utils";
 import { log } from "console";
-import { CategoryJob } from "@prisma/client";
+import { CategoryJob, Job } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import moment from "moment";
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/use-toast";
 
 interface PostJobProps {
   // Props dinamis Anda
 }
 
 const PostJobPage: FC<PostJobProps> = ({}) => {
+  const { data: session } = useSession();
+
   const { data, error, isLoading } = useSWR<CategoryJob>(
     "/api/job/categories",
     fetcher
@@ -53,8 +60,43 @@ const PostJobPage: FC<PostJobProps> = ({}) => {
     },
   });
 
-  const onSubmit = (val: z.infer<typeof jobFormSchema>) => {
-    console.log(val);
+  const router = useRouter();
+
+  const onSubmit = async (val: z.infer<typeof jobFormSchema>) => {
+    try {
+      const body: any = {
+        applicants: 0,
+        benefits: val.benefits,
+        categoryId: val.categoryId,
+        companyId: session?.user?.id,
+        datePosted: moment().toDate(),
+        description: val.jobDescription,
+        dueDate: moment().add(1, "M").toDate(),
+        jobType: val.jobType,
+        needs: 20,
+        niceToHave: val.niceToHaves,
+        requiredSkills: val.requiredSkills,
+        responsibility: val.responsibility,
+        roles: val.roles,
+        salaryFrom: val.salaryFrom,
+        salaryTo: val.salaryTo,
+        whoYouAre: val.whoYouAre,
+      };
+
+      await fetch("/api/job", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      await router.push("/job-listings");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+      });
+    }
   };
 
   useEffect(() => {

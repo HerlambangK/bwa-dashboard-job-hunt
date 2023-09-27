@@ -85,8 +85,8 @@ model Job {
   niceToHave     String
   benefits       Json
   companyId      String?
-  caregoryId     String?
-  CategoryJob    CategoryJob? @relation(fields: [caregoryId], references: [id])
+  categoryId     String?
+  CategoryJob    CategoryJob? @relation(fields: [categoryId], references: [id])
   Company        Company?     @relation(fields: [companyId], references: [id])
   Applicants     Applicants[]
 }

@@ -12,10 +12,10 @@ import { JOB_APPLICANTS_COLUMS, JOB_APPLICANTS_DATA } from "@/constants";
 import { Badge } from "@/components/ui/badge";
 import ButtonActionTable from "@/components/organisms/ButtonActionTable";
 interface ApplicantsProps {
-  // Props dinamis Anda
+  applicants: any;
 }
 
-const Applicants: FC<ApplicantsProps> = ({}) => {
+const Applicants: FC<ApplicantsProps> = ({ applicants }) => {
   return (
     <Table>
       <TableHeader>
@@ -27,15 +27,19 @@ const Applicants: FC<ApplicantsProps> = ({}) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {JOB_APPLICANTS_DATA.map((item: any, i: number) => (
-          <TableRow key={item.roles + i}>
-            <TableCell>{item.name}</TableCell>
-            <TableCell>{item.appliedDate}</TableCell>
-            <TableCell>
-              <ButtonActionTable url="/job-detail/1" />
-            </TableCell>
-          </TableRow>
-        ))}
+        {applicants && (
+          <>
+            {applicants.map((item: any, i: number) => (
+              <TableRow key={item.id + i}>
+                <TableCell>{item.user.name}</TableCell>
+                {/* <TableCell>{item.appliedDate}</TableCell> */}
+                <TableCell>
+                  <ButtonActionTable url="/job-detail/1" />
+                </TableCell>
+              </TableRow>
+            ))}
+          </>
+        )}
       </TableBody>
     </Table>
   );
