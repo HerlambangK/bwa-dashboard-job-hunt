@@ -64,10 +64,30 @@ const DialogAddTeam: FC<DialogAddTeamProps> = ({}) => {
       if (response.ok) {
         toast({
           title: "Success",
-          description: "Edit company overview successfully",
+          description: "Add team successfully",
           duration: 3000,
         });
         router.refresh();
+      } else {
+        const errorResponse = await response.json();
+        if (
+          response.status === 400 &&
+          errorResponse.error === "Team with the same name already exists"
+        ) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: errorResponse.error,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: `Error ${response.status}`,
+            description: "Failed to edit member",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
       }
     } catch (error) {
       toast({
@@ -91,7 +111,7 @@ const DialogAddTeam: FC<DialogAddTeamProps> = ({}) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Theme</DialogTitle>
+          <DialogTitle>Add New Team</DialogTitle>
           <DialogDescription>Fill the field to add new team</DialogDescription>
         </DialogHeader>
         <Separator />
