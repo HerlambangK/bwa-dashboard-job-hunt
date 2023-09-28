@@ -14,7 +14,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { sosialMediaFormSchema } from "@/lib/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CompanySosialMedia } from "@prisma/client";
-import { Loader, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { FC, useState } from "react";

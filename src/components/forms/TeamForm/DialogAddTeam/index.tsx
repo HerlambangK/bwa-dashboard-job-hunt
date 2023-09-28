@@ -1,5 +1,5 @@
 "use client";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
+import { Loader2, PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { sosialMediaFormSchema, teamFormSchema } from "@/lib/form-schema";
@@ -24,17 +24,61 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import { ToastAction } from "@/components/ui/toast";
 interface DialogAddTeamProps {
   // Props dinamis Anda
 }
 
 const DialogAddTeam: FC<DialogAddTeamProps> = ({}) => {
+  const { data: session } = useSession();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const { toast } = useToast();
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof teamFormSchema>>({
     resolver: zodResolver(teamFormSchema),
   });
 
-  const onSubmit = (val: z.infer<typeof teamFormSchema>) => {
-    console.log(val);
+  const onSubmit = async (val: z.infer<typeof teamFormSchema>) => {
+    try {
+      setIsSubmitting(true);
+
+      const body = {
+        ...val,
+        CompanyId: session?.user.id,
+      };
+      const response = await fetch("/api/company/teams", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      console.log("response", response);
+      console.log("body", body);
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "Edit company overview successfully",
+          duration: 3000,
+        });
+        router.refresh();
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: `Error ${error}`,
+        description: "Please try again",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+      console.log(error);
+    }
+    setIsSubmitting(false);
   };
 
   return (
@@ -107,7 +151,18 @@ const DialogAddTeam: FC<DialogAddTeamProps> = ({}) => {
                 )}
               />
             </div>
-            <Button>Save</Button>
+            <div className="flex justify-end items-center">
+              <Button size={"lg"} type="submit" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <div className="flex items-center">
+                    <Loader2 className="animate-spin mr-2" />
+                    <span>Submitting...</span>
+                  </div>
+                ) : (
+                  "Save Changes"
+                )}
+              </Button>
+            </div>
           </form>
         </Form>
       </DialogContent>
