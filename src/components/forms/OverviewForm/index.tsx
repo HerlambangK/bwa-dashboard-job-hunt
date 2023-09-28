@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn, fetcher } from "@/lib/utils";
 import InputSkills from "@/components/organisms/InputSkills";
@@ -348,7 +348,7 @@ const OverviewForm: FC<OverviewFormProps> = ({ detail }) => {
             <Button size={"lg"} type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <div className="flex items-center">
-                  <IoIosRefresh className="animate-spin mr-2" />
+                  <Loader2 className="animate-spin mr-2" />
                   <span>Submitting...</span>
                 </div>
               ) : (

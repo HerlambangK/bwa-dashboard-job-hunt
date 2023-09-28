@@ -14,9 +14,10 @@ import { useToast } from "@/components/ui/use-toast";
 import { sosialMediaFormSchema } from "@/lib/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CompanySosialMedia } from "@prisma/client";
+import { Loader, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -25,6 +26,8 @@ interface SosialMediaFormProps {
 }
 
 const SosialMediaForm: FC<SosialMediaFormProps> = ({ detail }) => {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const { data: session } = useSession();
   const { toast } = useToast();
   const router = useRouter();
@@ -38,6 +41,8 @@ const SosialMediaForm: FC<SosialMediaFormProps> = ({ detail }) => {
 
   const onSubmit = async (val: z.infer<typeof sosialMediaFormSchema>) => {
     try {
+      setIsSubmitting(true);
+
       const body = {
         ...val,
         companyId: session?.user.id,
@@ -66,6 +71,7 @@ const SosialMediaForm: FC<SosialMediaFormProps> = ({ detail }) => {
       });
       console.log(error);
     }
+    setIsSubmitting(false);
   };
   return (
     <Form {...form}>
@@ -162,8 +168,17 @@ const SosialMediaForm: FC<SosialMediaFormProps> = ({ detail }) => {
             />
           </div>
         </FieldInput>
-        <div className="flex justify-end">
-          <Button size={"lg"}>Save Changes</Button>
+        <div className="flex justify-end items-center">
+          <Button size={"lg"} type="submit" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <div className="flex items-center">
+                <Loader2 className="animate-spin mr-2" />
+                <span>Submitting...</span>
+              </div>
+            ) : (
+              "Save Changes"
+            )}
+          </Button>
         </div>
       </form>
     </Form>
