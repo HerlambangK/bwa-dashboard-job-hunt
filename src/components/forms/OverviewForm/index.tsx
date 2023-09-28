@@ -35,27 +35,100 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
+import { cn, fetcher } from "@/lib/utils";
 import InputSkills from "@/components/organisms/InputSkills";
 import CKEditor from "@/components/organisms/CKEditor";
+import useSWR from "swr";
+import { CompanyOverview, Industry } from "@prisma/client";
+import { supabaseUploadFile } from "@/lib/supabase";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import { ToastAction } from "@/components/ui/toast";
+import { IoIosRefresh } from "react-icons/io";
 
 interface OverviewFormProps {
-  // Props dinamis Anda
+  detail: CompanyOverview | undefined;
 }
 
-const OverviewForm: FC<OverviewFormProps> = ({}) => {
+const OverviewForm: FC<OverviewFormProps> = ({ detail }) => {
   const [editorLoaded, setEditorLoaded] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const { data: session } = useSession();
+  const { data } = useSWR<Industry>("/api/company/industry", fetcher);
+  const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof overviewFormSchema>>({
     resolver: zodResolver(overviewFormSchema),
+    defaultValues: {
+      dateFounded: detail?.dateFounded,
+      description: detail?.description,
+      employee: detail?.employee,
+      image: detail?.image,
+      industry: detail?.industry,
+      location: detail?.location,
+      name: detail?.name,
+      techStack: detail?.techStack,
+      website: detail?.website,
+    },
   });
 
   useEffect(() => {
     setEditorLoaded(true);
   }, []);
 
-  const onSubmit = (val: z.infer<typeof overviewFormSchema>) => {
-    console.log(val);
+  const onSubmit = async (val: z.infer<typeof overviewFormSchema>) => {
+    try {
+      setIsSubmitting(true);
+      let filename = "";
+      if (typeof val.image === "object") {
+        const uploadImg = await supabaseUploadFile(val.image, "company");
+        filename = uploadImg.filename;
+      } else {
+        filename = val.image;
+      }
+
+      const body = {
+        ...val,
+        image: filename,
+        companyId: session?.user.id,
+      };
+
+      const response = await fetch("/api/company/overview", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "Edit company overview successfully",
+          duration: 5000,
+        });
+        router.refresh();
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to edit company overview",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    } catch (error) {
+      await toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please try again",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+      console.log(error);
+    }
+    setIsSubmitting(false);
   };
 
   return (
@@ -195,11 +268,11 @@ const OverviewForm: FC<OverviewFormProps> = ({}) => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {LOCATION_OPTIONS.map(
-                            (item: optionType, i: number) => {
+                          {(Array.isArray(data) ? data : []).map(
+                            (item: Industry) => {
                               return (
-                                <SelectItem key={item.id + i} value={item.id}>
-                                  {item.label}
+                                <SelectItem key={item.id} value={item.id}>
+                                  {item.name}
                                 </SelectItem>
                               );
                             }
@@ -271,8 +344,17 @@ const OverviewForm: FC<OverviewFormProps> = ({}) => {
               editorLoaded={editorLoaded}
             />
           </FieldInput>
-          <div className="flex justify-end">
-            <Button size={"lg"}>Save Changes</Button>
+          <div className="flex justify-end items-center">
+            <Button size={"lg"} type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <div className="flex items-center">
+                  <IoIosRefresh className="animate-spin mr-2" />
+                  <span>Submitting...</span>
+                </div>
+              ) : (
+                "Save Changes"
+              )}
+            </Button>
           </div>
         </form>
       </Form>

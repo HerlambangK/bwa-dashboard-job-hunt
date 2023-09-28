@@ -35,7 +35,7 @@ async function getDatailJobs(id: string) {
 
 const JobDetailPage: FC<JobDetailPageProps> = async ({ params }) => {
   const job = await getDatailJobs(params.id);
-  console.log("job :", job?.CategoryJob?.name);
+  // console.log("job :", job?.CategoryJob?.name);
   return (
     <div>
       <div className="inline-flex items-center gap-5 mb-5">
