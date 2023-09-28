@@ -55,8 +55,8 @@ const OverviewForm: FC<OverviewFormProps> = ({ detail }) => {
   const [editorLoaded, setEditorLoaded] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const { data: session } = useSession();
   const { data } = useSWR<Industry>("/api/company/industry", fetcher);
+  const { data: session } = useSession();
   const { toast } = useToast();
   const router = useRouter();
 
