@@ -55,10 +55,10 @@ const OverviewForm: FC<OverviewFormProps> = ({ detail }) => {
   const [editorLoaded, setEditorLoaded] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const { data } = useSWR<Industry>("/api/company/industry", fetcher);
   const { data: session } = useSession();
   const { toast } = useToast();
   const router = useRouter();
+  const { data } = useSWR<Industry[]>("/api/company/industry", fetcher);
 
   const form = useForm<z.infer<typeof overviewFormSchema>>({
     resolver: zodResolver(overviewFormSchema),
@@ -74,10 +74,6 @@ const OverviewForm: FC<OverviewFormProps> = ({ detail }) => {
       website: detail?.website,
     },
   });
-
-  useEffect(() => {
-    setEditorLoaded(true);
-  }, []);
 
   const onSubmit = async (val: z.infer<typeof overviewFormSchema>) => {
     try {
@@ -110,6 +106,7 @@ const OverviewForm: FC<OverviewFormProps> = ({ detail }) => {
           description: "Edit company overview successfully",
           duration: 5000,
         });
+
         router.refresh();
       } else {
         toast({
@@ -131,6 +128,9 @@ const OverviewForm: FC<OverviewFormProps> = ({ detail }) => {
     setIsSubmitting(false);
   };
 
+  useEffect(() => {
+    setEditorLoaded(true);
+  }, []);
   return (
     <div>
       <div>
@@ -271,7 +271,7 @@ const OverviewForm: FC<OverviewFormProps> = ({ detail }) => {
                           {(Array.isArray(data) ? data : []).map(
                             (item: Industry) => {
                               return (
-                                <SelectItem key={item.id} value={item.id}>
+                                <SelectItem key={item.id} value={item.name}>
                                   {item.name}
                                 </SelectItem>
                               );
