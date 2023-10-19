@@ -10,6 +10,7 @@ import prisma from "@/lib/prisma";
 interface SettingPageProps {
   // Props dinamis Anda
 }
+export const revalidate = 0;
 
 async function getDetailCompany() {
   const session = await getServerSession(authOptions);

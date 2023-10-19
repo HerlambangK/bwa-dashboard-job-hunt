@@ -21,6 +21,7 @@ import moment from "moment";
 interface JoblistingsPageProps {
   // Props dinamis Anda
 }
+export const revalidate = 0;
 
 async function getDataJobs() {
   const session = await getServerSession(authOptions);

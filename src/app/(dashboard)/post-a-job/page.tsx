@@ -43,6 +43,7 @@ import { toast } from "@/components/ui/use-toast";
 interface PostJobProps {
   // Props dinamis Anda
 }
+export const revalidate = 0;
 
 const PostJobPage: FC<PostJobProps> = ({}) => {
   const { data: session } = useSession();
