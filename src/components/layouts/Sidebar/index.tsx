@@ -34,6 +34,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
             <Button
               variant={"ghost"}
               className="w-full justify-start rounded-sm hover:text-primary"
+              disabled
             >
               <BsEnvelope className="mr-2 text-lg" /> Messages
             </Button>
@@ -41,6 +42,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
             <Button
               variant={"ghost"}
               className="w-full justify-start rounded-sm hover:text-primary"
+              disabled
             >
               <HiOutlineBuildingOffice2 className="mr-2 text-lg" /> Company
               Profile
@@ -49,6 +51,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
             <Button
               variant={"ghost"}
               className="w-full justify-start rounded-sm hover:text-primary"
+              disabled
             >
               <PiUsersThreeBold className="mr-2 text-lg" /> All Applicants
             </Button>
@@ -64,6 +67,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
             <Button
               variant={"ghost"}
               className="w-full justify-start rounded-sm hover:text-primary"
+              disabled
             >
               <BsCalendar2Date className="mr-2 text-lg" /> My Schadule
             </Button>
