@@ -43,10 +43,19 @@ const SignInPage: FC<SignInPageProps> = ({}) => {
     });
 
     if (authenticated?.error) {
-      toast({
-        title: "Error",
-        description: "Email or Password maybe wrong",
-      });
+      console.log("error login", authenticated.error);
+
+      if (authenticated.error === "Email not verified") {
+        toast({
+          title: "Error",
+          description: "Email not verified. Please verify your email.",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Email or Password may be wrong",
+        });
+      }
       return;
     }
     await router.push("/");

@@ -42,24 +42,34 @@ const SignUpPage: FC<SignUpPageProps> = ({}) => {
   const onSumbit = async (val: z.infer<typeof signUpFormSchema>) => {
     // console.log(val);
     try {
-      await fetch("/api/company/new-user", {
+      const response = await fetch("/api/new-user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(val),
       });
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: "error",
+          description: `${data.message}`,
+        });
+        throw new Error(`${data.message}`);
+      }
       toast({
         title: "success",
-        description: `Your account has been created, welcome ${val.name}`,
+        description: `Your account has been created, please verify your email ${val.email}`,
       });
 
       await router.push("/auth/signin");
     } catch (error) {
       toast({
         title: "error",
-        description: "Something went wrong when Sign Up",
+        description: `${error}`,
       });
+
       console.log(error);
     }
   };
