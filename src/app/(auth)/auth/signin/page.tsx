@@ -58,7 +58,7 @@ const SignInPage: FC<SignInPageProps> = ({}) => {
       }
       return;
     }
-    await router.push("/");
+    await router.push("/dashboard");
   };
 
   return (

@@ -1,5 +1,6 @@
 import Sidebar from "@/components/layouts/Sidebar";
-import "../globals.css";
+// import "../globals.css";
+import "../../../app/globals.css";
 import type { Metadata } from "next";
 import { Epilogue } from "next/font/google";
 import Header from "@/components/layouts/Header";
@@ -7,7 +8,9 @@ import { Toaster } from "@/components/ui/toaster";
 import NextAuthProvider from "@/context/NextAuthProvider";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "../../api/auth/[...nextauth]/route";
+import Navbar from "@/components/menu/nav-bar";
+import { BurgerMenu } from "@/components/menu/burgermenu";
 
 const epilogue = Epilogue({ subsets: ["latin"] });
 
@@ -24,7 +27,7 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
 
   if (session === null) {
-    return redirect("/auth/signin");
+    return redirect("/");
   }
 
   return (
@@ -38,8 +41,12 @@ export default async function RootLayout({
                   <div className="hidden lg:block w-[18%]">
                     <Sidebar />
                   </div>
-                  <div className="col-span-3 overflow-auto lg:col-span-5 lg:border-l w-[82%]">
+
+                  <div className="col-span-3 overflow-auto lg:col-span-5 lg:border-l w-full lg:w-[82%]">
                     <div className="px-6 py-6 lg:px-8">
+                      <div className=" md:hidden">
+                        <Navbar />
+                      </div>
                       <Header />
                       {children}
                     </div>

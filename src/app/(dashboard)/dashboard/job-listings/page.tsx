@@ -39,16 +39,23 @@ const JoblistingsPage: FC<JoblistingsPageProps> = async ({}) => {
 
   return (
     <div>
-      <div className="font-semibold text-3xl">Job Listings</div>
+      <div className="font-semibold text-md md:text-3xl">Job Listings</div>
       <div className="mt-10">
         <Table>
           <TableCaption>A list of your job listings.</TableCaption>
           <TableHeader>
             <TableRow>
               {JOB_LISTING_COLUMS.map((item: string, index: number) => (
-                <TableHead key={item + 1}>{item}</TableHead>
+                <TableHead
+                  key={item + 1}
+                  className="text-xs md:text-md font-semibold"
+                >
+                  {item}
+                </TableHead>
               ))}
-              <TableHead>Action</TableHead>
+              <TableHead className="text-xs md:text-md font-semibold">
+                <Badge variant={"outline"}>Action</Badge>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

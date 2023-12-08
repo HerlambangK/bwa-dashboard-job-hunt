@@ -18,7 +18,7 @@ const Header: FC<HeaderProps> = ({}) => {
   return (
     <div className="pb-3 mb-3 border-b border-border flex flex-row items-center justify-between">
       <div>
-        <div>Company</div>
+        <div>Welcome to your Member area</div>
         <div className="font-semibold">{session?.user?.name}</div>
       </div>
       <div>

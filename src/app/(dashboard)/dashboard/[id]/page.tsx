@@ -41,7 +41,7 @@ const JobDetailPage: FC<JobDetailPageProps> = async ({ params }) => {
     <div>
       <div className="inline-flex items-center gap-5 mb-5">
         <div>
-          <Link href={"/job-listings"}>
+          <Link href={"/dashboard/job-listings"}>
             <ArrowLeftIcon className="w-9 h-9" />
           </Link>
         </div>

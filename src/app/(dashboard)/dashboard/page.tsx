@@ -1,9 +1,7 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 
-export default function Home() {
+export default function Dashboard() {
   const { data: session } = useSession();
   return (
     <div className="flex flex-col items-center h-screen w-full justify-center">

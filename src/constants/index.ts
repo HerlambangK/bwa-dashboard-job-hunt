@@ -1,3 +1,5 @@
+import { AiOutlineHome, AiOutlineLogout } from "react-icons/ai";
+
 import { EnumValues } from "zod";
 export type optionType = {
   id: string;
@@ -19,6 +21,39 @@ export const JOB_LISTING_COLUMS: string[] = [
   "Job Type",
   "Applicants",
   "Needs",
+];
+
+export const MENU_DASHBOARD = [
+  {
+    menu_name: "Home",
+    link: "/",
+    icon: AiOutlineHome,
+  },
+  // {
+  //   menu_name: "Messages",
+  //   link: "/messages",
+  //   icon: `<AiOutlineHome className="mr-2 text-lg" />`,
+  // },
+  // {
+  //   menu_name: "Company Profile",
+  //   link: "/company",
+  //   icon: `<AiOutlineHome className="mr-2 text-lg" />`,
+  // },
+  // {
+  //   menu_name: "All Applicants",
+  //   link: "/company",
+  //   icon: `<AiOutlineHome className="mr-2 text-lg" />`,
+  // },
+  // {
+  //   menu_name: "Job Listings",
+  //   link: "/job-listing",
+  //   icon: `<AiOutlineHome className="mr-2 text-lg" />`,
+  // },
+  // {
+  //   menu_name: "My Schadule",
+  //   link: "/my-schadule",
+  //   icon: `<AiOutlineHome className="mr-2 text-lg" />`,
+  // },
 ];
 
 export const JOB_APPLICANTS_COLUMS: string[] = ["Name"];
